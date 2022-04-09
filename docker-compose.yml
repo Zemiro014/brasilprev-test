@@ -1,0 +1,11 @@
+# terá todos os serviços necessários para o projecto funcionar: banco de dados, Kafka, ActiveMQ, nossas aplicações :porta,
+version: "3.7"
+services:
+  postgres_client:
+    container_name: postgres_client_brasilprev
+    image: postgres:12.2
+    environment:
+      POSTGRES_USER: clientbrasilprev
+      POSTGRES_PASSWORD: clientbrasilprev
+    ports:
+      - "5432:5432"

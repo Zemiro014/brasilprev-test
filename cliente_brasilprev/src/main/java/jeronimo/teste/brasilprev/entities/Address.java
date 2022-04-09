@@ -1,11 +1,19 @@
 package jeronimo.teste.brasilprev.entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-public class Adress extends PanacheEntity {
+@Table(name = "adress_tab")
+public class Address extends PanacheEntityBase {
+
+    @Id
+    @Column(name = "id", nullable = false)
+    private String id;
     private String street;
     private String number;
     private String zipCode;
@@ -13,6 +21,13 @@ public class Adress extends PanacheEntity {
     private String state;
     private String country;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
     public String getStreet() {
         return street;
     }

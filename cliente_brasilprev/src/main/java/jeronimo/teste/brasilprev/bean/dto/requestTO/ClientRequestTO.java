@@ -1,21 +1,18 @@
-package jeronimo.teste.brasilprev.entities;
+package jeronimo.teste.brasilprev.bean.dto.requestTO;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import java.io.Serializable;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "client_tab")
-public class Client extends PanacheEntityBase {
-    @Id
-    @Column(name = "id", nullable = false)
+public class ClientRequestTO implements Serializable
+{
     private String id;
     private String clientName;
     private String cpf;
 
     @OneToOne
     @JoinColumn(name = "adress_id")
-    private Address address;
+    private AdressRequestTO adress;
 
     public String getId() {
         return id;
@@ -25,8 +22,8 @@ public class Client extends PanacheEntityBase {
         this.id = id;
     }
 
-    public Address getAdress() {
-        return address;
+    public AdressRequestTO getAdress() {
+        return adress;
     }
 
     public String getClientName() {
@@ -45,7 +42,7 @@ public class Client extends PanacheEntityBase {
         this.cpf = cpf;
     }
 
-    public void setAdress(Address address) {
-        this.address = address;
+    public void setAdress(AdressRequestTO adress) {
+        this.adress = adress;
     }
 }
