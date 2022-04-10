@@ -2,7 +2,7 @@ package jeronimo.teste.brasilprev.bean.dto.requestTO;
 
 import java.io.Serializable;
 
-public class AdressRequestTO implements Serializable {
+public class CreateAddressRequestTO implements Serializable {
 
     private String street;
     private String number;

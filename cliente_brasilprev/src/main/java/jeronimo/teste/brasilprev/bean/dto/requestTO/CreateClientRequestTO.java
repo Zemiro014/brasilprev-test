@@ -1,28 +1,14 @@
 package jeronimo.teste.brasilprev.bean.dto.requestTO;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import java.io.Serializable;
 
-public class ClientRequestTO implements Serializable
+public class CreateClientRequestTO implements Serializable
 {
-    private String id;
     private String clientName;
     private String cpf;
+    private CreateAddressRequestTO adress;
 
-    @OneToOne
-    @JoinColumn(name = "adress_id")
-    private AdressRequestTO adress;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public AdressRequestTO getAdress() {
+    public CreateAddressRequestTO getAdress() {
         return adress;
     }
 
@@ -42,7 +28,7 @@ public class ClientRequestTO implements Serializable
         this.cpf = cpf;
     }
 
-    public void setAdress(AdressRequestTO adress) {
+    public void setAdress(CreateAddressRequestTO adress) {
         this.adress = adress;
     }
 }

@@ -1,18 +1,8 @@
-package jeronimo.teste.brasilprev.entities;
+package jeronimo.teste.brasilprev.bean.dto.requestTO;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "adress_tab")
-public class Address extends PanacheEntityBase {
-    @Id
-    @Column(name = "id", nullable = false)
-    private String id;
+public class UpdateAddressTO implements Serializable {
     private String street;
     private String number;
     private String zipCode;
@@ -20,13 +10,6 @@ public class Address extends PanacheEntityBase {
     private String state;
     private String country;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
     public String getStreet() {
         return street;
     }
