@@ -1,15 +1,17 @@
 package jeronimo.teste.brasilprev.service.impl;
 
 import com.google.common.base.Strings;
-import jeronimo.teste.brasilprev.bean.dto.requestTO.CreateClientRequestTO;
-import jeronimo.teste.brasilprev.bean.dto.requestTO.UpdateAddressTO;
-import jeronimo.teste.brasilprev.bean.dto.requestTO.UpdateClientRequestTO;
-import jeronimo.teste.brasilprev.bean.dto.requestTO.UpdateClientTO;
-import jeronimo.teste.brasilprev.bean.dto.responseTO.AddressResponseTO;
-import jeronimo.teste.brasilprev.bean.dto.responseTO.ClientResponseTO;
+import jeronimo.teste.brasilprev.bean.to.requestTO.CreateClientRequestTO;
+import jeronimo.teste.brasilprev.bean.to.requestTO.UpdateAddressTO;
+import jeronimo.teste.brasilprev.bean.to.requestTO.UpdateClientRequestTO;
+import jeronimo.teste.brasilprev.bean.to.requestTO.UpdateClientTO;
+import jeronimo.teste.brasilprev.bean.to.responseTO.AddressResponseTO;
+import jeronimo.teste.brasilprev.bean.to.responseTO.ClientResponseTO;
+import jeronimo.teste.brasilprev.bean.vo.AddressVO;
+import jeronimo.teste.brasilprev.bean.vo.ClientVO;
+import jeronimo.teste.brasilprev.constants.ClientExceptionConstants;
 import jeronimo.teste.brasilprev.dao.api.postgres.PostgresClientDaoApi;
-import jeronimo.teste.brasilprev.entities.Address;
-import jeronimo.teste.brasilprev.entities.Client;
+import jeronimo.teste.brasilprev.exception.custom.ClientException;
 import jeronimo.teste.brasilprev.service.api.ClientServiceApi;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -25,78 +27,79 @@ public class ClientServiceImpl implements ClientServiceApi {
 
     @Override
     public List<ClientResponseTO> findAllClients() {
-        List<Client> clients = clientDaoApi.findAll();
-        return clients.stream()
-                .map(this::convertEntityToResponse)
+        List<ClientVO> clientVOS = clientDaoApi.findAll();
+        return clientVOS.stream()
+                .map(this::convertVoToResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     public void creatingNewClient(CreateClientRequestTO to) {
-        Client clientEntity = convertRequestToEntity(to);
-        clientDaoApi.create(clientEntity);
+        clientDaoApi.create(convertRequestToVo(to));
     }
 
     @Override
-    public ClientResponseTO findClientById(String clientId) {
-        Client clientEntity = clientDaoApi.findById(clientId);
-        return convertEntityToResponse(clientEntity);
+    public ClientResponseTO findClientById(String clientId) throws ClientException {
+        ClientVO clientVO= clientDaoApi.findById(clientId);
+        if(clientVO == null)
+            throw new ClientException(ClientExceptionConstants.ERROR_CUSTOMER_NOT_FOUND, clientId);
+        return convertVoToResponse(clientVO);
     }
 
     @Override
-    public void updateClient(String clientId, UpdateClientRequestTO to) {
-       Client clientEntity = clientDaoApi.findById(clientId);
-       clientDaoApi.update(updateClientInformation(clientEntity, to));
+    public void updateClient(String clientId, UpdateClientRequestTO to) throws ClientException {
+       ClientVO clientVO = clientDaoApi.findById(clientId);
+        if(clientVO == null)
+            throw new ClientException(ClientExceptionConstants.ERROR_CUSTOMER_NOT_FOUND, clientId);
+       clientDaoApi.update(updateClientInformation(clientVO, to));
     }
 
-    private Client updateClientInformation(Client clientEntity, UpdateClientRequestTO to) {
+    private ClientVO updateClientInformation(ClientVO clientVO, UpdateClientRequestTO to) {
         UpdateClientTO updateClientTO = to.getNewBaseInformation();
-        clientEntity.setClientName(Strings.isNullOrEmpty(updateClientTO.getClientName()) ? clientEntity.getClientName() : updateClientTO.getClientName());
-        clientEntity.setCpf(Strings.isNullOrEmpty(updateClientTO.getCpf()) ? clientEntity.getCpf() : updateClientTO.getCpf());
+        clientVO.setClientName(Strings.isNullOrEmpty(updateClientTO.getClientName()) ? clientVO.getClientName() : updateClientTO.getClientName());
+        clientVO.setCpf(Strings.isNullOrEmpty(updateClientTO.getCpf()) ? clientVO.getCpf() : updateClientTO.getCpf());
 
         UpdateAddressTO addressTO = to.getNewAddressesInformation();
-        clientEntity.getAdress().setCity(Strings.isNullOrEmpty(addressTO.getCity()) ? clientEntity.getAdress().getCity() : addressTO.getCity());
-        clientEntity.getAdress().setCountry(Strings.isNullOrEmpty(addressTO.getCountry()) ? clientEntity.getAdress().getCountry() : addressTO.getCountry());
-        clientEntity.getAdress().setNumber(Strings.isNullOrEmpty(addressTO.getNumber()) ? clientEntity.getAdress().getNumber() : addressTO.getNumber());
-        clientEntity.getAdress().setState(Strings.isNullOrEmpty(addressTO.getState()) ? clientEntity.getAdress().getState() : addressTO.getState());
-        clientEntity.getAdress().setStreet(Strings.isNullOrEmpty(addressTO.getStreet()) ? clientEntity.getAdress().getStreet() : addressTO.getStreet());
-        clientEntity.getAdress().setZipCode(Strings.isNullOrEmpty(addressTO.getZipCode()) ? clientEntity.getAdress().getZipCode() : addressTO.getZipCode());
-                return clientEntity;
+        clientVO.getAdress().setCity(Strings.isNullOrEmpty(addressTO.getCity()) ? clientVO.getAdress().getCity() : addressTO.getCity());
+        clientVO.getAdress().setCountry(Strings.isNullOrEmpty(addressTO.getCountry()) ? clientVO.getAdress().getCountry() : addressTO.getCountry());
+        clientVO.getAdress().setNumber(Strings.isNullOrEmpty(addressTO.getNumber()) ? clientVO.getAdress().getNumber() : addressTO.getNumber());
+        clientVO.getAdress().setState(Strings.isNullOrEmpty(addressTO.getState()) ? clientVO.getAdress().getState() : addressTO.getState());
+        clientVO.getAdress().setStreet(Strings.isNullOrEmpty(addressTO.getStreet()) ? clientVO.getAdress().getStreet() : addressTO.getStreet());
+        clientVO.getAdress().setZipCode(Strings.isNullOrEmpty(addressTO.getZipCode()) ? clientVO.getAdress().getZipCode() : addressTO.getZipCode());
+        return clientVO;
     }
 
-    private ClientResponseTO convertEntityToResponse(Client entity){
+    private ClientResponseTO convertVoToResponse(ClientVO clientVO){
         ClientResponseTO clientResponseTO = new ClientResponseTO();
-        clientResponseTO.setClientName(entity.getClientName());
-        clientResponseTO.setCpf(entity.getCpf());
-        clientResponseTO.setId(entity.getId());
+        clientResponseTO.setClientName(clientVO.getClientName());
+        clientResponseTO.setCpf(clientVO.getCpf());
+        clientResponseTO.setId(clientVO.getId());
 
         AddressResponseTO addressResponseTO = new AddressResponseTO();
-        addressResponseTO.setId(entity.getAdress().getId());
-        addressResponseTO.setCity(entity.getAdress().getCity());
-        addressResponseTO.setCountry(entity.getAdress().getCountry());
-        addressResponseTO.setState(entity.getAdress().getState());
-        addressResponseTO.setNumber(entity.getAdress().getNumber());
-        addressResponseTO.setStreet(entity.getAdress().getStreet());
-        addressResponseTO.setZipCode(entity.getAdress().getZipCode());
+        addressResponseTO.setId(clientVO.getAdress().getId());
+        addressResponseTO.setCity(clientVO.getAdress().getCity());
+        addressResponseTO.setCountry(clientVO.getAdress().getCountry());
+        addressResponseTO.setState(clientVO.getAdress().getState());
+        addressResponseTO.setNumber(clientVO.getAdress().getNumber());
+        addressResponseTO.setStreet(clientVO.getAdress().getStreet());
+        addressResponseTO.setZipCode(clientVO.getAdress().getZipCode());
         clientResponseTO.setAdress(addressResponseTO);
 
         return clientResponseTO;
     }
 
-    private Client convertRequestToEntity(CreateClientRequestTO createClientRequestTO){
-        Client entity = new Client();
-        entity.setClientName(createClientRequestTO.getClientName());
-        entity.setCpf(createClientRequestTO.getCpf());
-
-        Address address = new Address();
-        address.setCity(createClientRequestTO.getAdress().getCity());
-        address.setCountry(createClientRequestTO.getAdress().getCountry());
-        address.setState(createClientRequestTO.getAdress().getState());
-        address.setNumber(createClientRequestTO.getAdress().getNumber());
-        address.setStreet(createClientRequestTO.getAdress().getStreet());
-        address.setZipCode(createClientRequestTO.getAdress().getZipCode());
-        entity.setAdress(address);
-
-        return entity;
+    private ClientVO convertRequestToVo(CreateClientRequestTO createClientRequestTO){
+        ClientVO clientVO = new ClientVO();
+        clientVO.setClientName(createClientRequestTO.getClientName());
+        clientVO.setCpf(createClientRequestTO.getCpf());
+        AddressVO addressVO = new AddressVO();
+        addressVO.setCity(createClientRequestTO.getAdress().getCity());
+        addressVO.setCountry(createClientRequestTO.getAdress().getCountry());
+        addressVO.setState(createClientRequestTO.getAdress().getState());
+        addressVO.setNumber(createClientRequestTO.getAdress().getNumber());
+        addressVO.setStreet(createClientRequestTO.getAdress().getStreet());
+        addressVO.setZipCode(createClientRequestTO.getAdress().getZipCode());
+        clientVO.setAdress(addressVO);
+        return clientVO;
     }
 }

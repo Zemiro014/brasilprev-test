@@ -1,12 +1,13 @@
-package jeronimo.teste.brasilprev.bean.dto.responseTO;
+package jeronimo.teste.brasilprev.bean.vo;
 
 import java.io.Serializable;
 
-public class ClientResponseTO implements Serializable {
+public class ClientVO implements Serializable {
     private String id;
     private String clientName;
     private String cpf;
-    private AddressResponseTO adress;
+
+    private AddressVO address;
 
     public String getId() {
         return id;
@@ -16,8 +17,8 @@ public class ClientResponseTO implements Serializable {
         this.id = id;
     }
 
-    public AddressResponseTO getAdress() {
-        return adress;
+    public AddressVO getAdress() {
+        return address;
     }
 
     public String getClientName() {
@@ -36,7 +37,7 @@ public class ClientResponseTO implements Serializable {
         this.cpf = cpf;
     }
 
-    public void setAdress(AddressResponseTO adress) {
-        this.adress = adress;
+    public void setAdress(AddressVO address) {
+        this.address = address;
     }
 }

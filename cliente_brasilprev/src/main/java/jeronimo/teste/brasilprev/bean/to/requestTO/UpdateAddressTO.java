@@ -1,22 +1,14 @@
-package jeronimo.teste.brasilprev.bean.dto.responseTO;
+package jeronimo.teste.brasilprev.bean.to.requestTO;
 
-public class AddressResponseTO {
+import java.io.Serializable;
 
-    private String id;
+public class UpdateAddressTO implements Serializable {
     private String street;
     private String number;
     private String zipCode;
     private String city;
     private String state;
     private String country;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getStreet() {
         return street;

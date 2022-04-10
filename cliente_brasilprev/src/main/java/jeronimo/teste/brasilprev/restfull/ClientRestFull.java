@@ -1,8 +1,9 @@
 package jeronimo.teste.brasilprev.restfull;
 
-import jeronimo.teste.brasilprev.bean.dto.requestTO.CreateClientRequestTO;
-import jeronimo.teste.brasilprev.bean.dto.requestTO.UpdateClientRequestTO;
-import jeronimo.teste.brasilprev.bean.dto.responseTO.ClientResponseTO;
+import jeronimo.teste.brasilprev.bean.to.requestTO.CreateClientRequestTO;
+import jeronimo.teste.brasilprev.bean.to.requestTO.UpdateClientRequestTO;
+import jeronimo.teste.brasilprev.bean.to.responseTO.ClientResponseTO;
+import jeronimo.teste.brasilprev.exception.custom.ClientException;
 import jeronimo.teste.brasilprev.facade.api.ClientFacadeApi;
 
 import javax.inject.Inject;
@@ -33,14 +34,14 @@ public class ClientRestFull {
 
     @Path("/{clientId}")
     @GET
-    public Response findClientById(@PathParam("clientId") String clientId){
+    public Response findClientById(@PathParam("clientId") String clientId) throws ClientException {
         ClientResponseTO clientResponseTO = facadeApi.findClientById(clientId);
         return Response.ok().entity(clientResponseTO).build();
     }
 
     @Path("/{clientId}")
     @PUT
-    public Response updateClient(@PathParam("clientId") String clientId, UpdateClientRequestTO to){
+    public Response updateClient(@PathParam("clientId") String clientId, UpdateClientRequestTO to) throws ClientException {
         facadeApi.updateClient(clientId, to);
         return Response.ok().build();
     }

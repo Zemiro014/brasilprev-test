@@ -1,8 +1,9 @@
 package jeronimo.teste.brasilprev.facade.impl;
 
-import jeronimo.teste.brasilprev.bean.dto.requestTO.CreateClientRequestTO;
-import jeronimo.teste.brasilprev.bean.dto.requestTO.UpdateClientRequestTO;
-import jeronimo.teste.brasilprev.bean.dto.responseTO.ClientResponseTO;
+import jeronimo.teste.brasilprev.bean.to.requestTO.CreateClientRequestTO;
+import jeronimo.teste.brasilprev.bean.to.requestTO.UpdateClientRequestTO;
+import jeronimo.teste.brasilprev.bean.to.responseTO.ClientResponseTO;
+import jeronimo.teste.brasilprev.exception.custom.ClientException;
 import jeronimo.teste.brasilprev.facade.api.ClientFacadeApi;
 import jeronimo.teste.brasilprev.service.api.ClientServiceApi;
 
@@ -27,12 +28,12 @@ public class ClientFacadeImpl implements ClientFacadeApi {
     }
 
     @Override
-    public ClientResponseTO findClientById(String clientId) {
+    public ClientResponseTO findClientById(String clientId) throws ClientException {
         return clientService.findClientById(clientId);
     }
 
     @Override
-    public void updateClient(String clientId, UpdateClientRequestTO to) {
+    public void updateClient(String clientId, UpdateClientRequestTO to) throws ClientException {
         clientService.updateClient(clientId, to);
     }
 }

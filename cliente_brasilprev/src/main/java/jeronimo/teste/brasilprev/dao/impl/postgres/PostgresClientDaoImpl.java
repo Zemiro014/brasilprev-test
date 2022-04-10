@@ -1,32 +1,26 @@
 package jeronimo.teste.brasilprev.dao.impl.postgres;
-
-import org.json.JSONObject;
+import jeronimo.teste.brasilprev.bean.vo.AddressVO;
+import jeronimo.teste.brasilprev.bean.vo.ClientVO;
 import jeronimo.teste.brasilprev.dao.api.postgres.PostgresClientDaoApi;
 import jeronimo.teste.brasilprev.entities.Address;
 import jeronimo.teste.brasilprev.entities.Client;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
-import javax.ws.rs.NotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class PostgresClientDaoImpl implements PostgresClientDaoApi {
 
-//    @Inject
-//    ClientRepository clientRepository;
-//
-//    @Inject
-//    AddresRepository addresRepository;
-
     @Override
     @Transactional
-    public void create(Client clientEntity) {
-        clientEntity.setId(UUID.randomUUID().toString());
-        clientEntity.getAdress().setId(UUID.randomUUID().toString());
-        Address addressEntity = clientEntity.getAdress();
-        addressEntity.persist();
-        clientEntity.persist();
+    public void create(ClientVO clientVO) {
+        clientVO.setId(UUID.randomUUID().toString());
+        clientVO.getAdress().setId(UUID.randomUUID().toString());
+        Client client = this.convertVoToEntity(clientVO);
+        client.getAdress().persist();
+        client.persist();
     }
 
     @Override
@@ -35,33 +29,75 @@ public class PostgresClientDaoImpl implements PostgresClientDaoApi {
     }
 
     @Override
-    public Client findById(String id) {
+    public ClientVO findById(String id) {
         Optional<Client> optional = Client.findByIdOptional(id);
-        return optional.orElseThrow(NotFoundException::new);
+        ClientVO clientVO = null;
+        if(optional.isPresent()){
+            clientVO = this.convertEntityToVo(optional.get());
+        }
+        return clientVO;
     }
 
     @Override
-    public List<Client> findAll() {
-        return Client.findAll().list();
+    public List<ClientVO> findAll() {
+        List<ClientVO> clientVOS = null;
+        List<Client> clients = Client.listAll();
+        clientVOS = clients.stream().map(this::convertEntityToVo).collect(Collectors.toList());
+        return clientVOS;
     }
 
     @Override
     @Transactional
-    public void update(Client entity) {
+    public void update(ClientVO clientVO) {
         Map<String, Object> addressParams = new HashMap<>();
-        addressParams.put("city", entity.getAdress().getCity());
-        addressParams.put("country", entity.getAdress().getCountry());
-        addressParams.put("number", entity.getAdress().getNumber());
-        addressParams.put("state", entity.getAdress().getState());
-        addressParams.put("street", entity.getAdress().getStreet());
-        addressParams.put("zipcode", entity.getAdress().getZipCode());
-        addressParams.put("id", entity.getAdress().getId());
+        addressParams.put("city", clientVO.getAdress().getCity());
+        addressParams.put("country", clientVO.getAdress().getCountry());
+        addressParams.put("number", clientVO.getAdress().getNumber());
+        addressParams.put("state", clientVO.getAdress().getState());
+        addressParams.put("street", clientVO.getAdress().getStreet());
+        addressParams.put("zipcode", clientVO.getAdress().getZipCode());
+        addressParams.put("id", clientVO.getAdress().getId());
         Address.update("city = :city , country = :country , number = :number , state = :state , street = :street , zipcode = :zipcode  where id = :id", addressParams);
 
         Map<String, Object> clientParams = new HashMap<>();
-        clientParams.put("clientname", entity.getClientName());
-        clientParams.put("cpf", entity.getCpf());
-        clientParams.put("id", entity.getId());
+        clientParams.put("clientname", clientVO.getClientName());
+        clientParams.put("cpf", clientVO.getCpf());
+        clientParams.put("id", clientVO.getId());
         Client.update("clientname = :clientname , cpf = :cpf where id = :id", clientParams);
+    }
+
+    private ClientVO convertEntityToVo(Client entity){
+        ClientVO clientVO = new ClientVO();
+        clientVO.setClientName(entity.getClientName());
+        clientVO.setCpf(entity.getCpf());
+        clientVO.setId(entity.getId());
+
+        AddressVO addressVO = new AddressVO();
+        addressVO.setZipCode(entity.getAdress().getZipCode());
+        addressVO.setState(entity.getAdress().getState());
+        addressVO.setStreet(entity.getAdress().getStreet());
+        addressVO.setNumber(entity.getAdress().getNumber());
+        addressVO.setId(entity.getAdress().getId());
+        addressVO.setCity(entity.getAdress().getCity());
+        addressVO.setCountry(entity.getAdress().getCountry());
+        clientVO.setAdress(addressVO);
+        return  clientVO;
+    }
+    private Client convertVoToEntity(ClientVO clientVO){
+        Client entity = new Client();
+        entity.setClientName(clientVO.getClientName());
+        entity.setCpf(clientVO.getCpf());
+        entity.setId(clientVO.getId());
+
+        Address address = new Address();
+        address.setZipCode(clientVO.getAdress().getZipCode());
+        address.setState(clientVO.getAdress().getState());
+        address.setStreet(clientVO.getAdress().getStreet());
+        address.setNumber(clientVO.getAdress().getNumber());
+        address.setId(clientVO.getAdress().getId());
+        address.setCity(clientVO.getAdress().getCity());
+        address.setCountry(clientVO.getAdress().getCountry());
+        entity.setAdress(address);
+        return entity;
     }
 }

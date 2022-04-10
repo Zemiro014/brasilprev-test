@@ -1,4 +1,4 @@
-package jeronimo.teste.brasilprev.bean.dto.requestTO;
+package jeronimo.teste.brasilprev.bean.to.requestTO;
 
 import java.io.Serializable;
 
