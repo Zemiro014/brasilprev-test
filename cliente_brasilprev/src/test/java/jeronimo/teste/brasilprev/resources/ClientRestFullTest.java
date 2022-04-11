@@ -14,27 +14,27 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 @TestHTTPEndpoint(ClientRestFull.class)
 public class ClientRestFullTest {
 
-    @Test
-    public void testFindAllClients(){
-        when().get()
-                .then()
-                .statusCode(200);
-    }
+//    @Test
+//    public void testFindAllClients(){
+//        when().get()
+//                .then()
+//                .statusCode(200);
+//    }
 
-    @Test
-    public void testFindClientById(){
-        when().get("b07e0b20-b7b4-11ec-aa42-bb7fafee3cf6")
-                .then()
-                .statusCode(200)
-                .body(notNullValue());
-    }
-    @Test
-    public void testClientByIdNotFound(){
-        when().get("b07e0b20-b7b4-11ec-aa42-bb7fafee3cf65")
-                .then()
-                .statusCode(400)
-                .body(notNullValue());
-    }
+//    @Test
+//    public void testFindClientById(){
+//        when().get("b07e0b20-b7b4-11ec-aa42-bb7fafee3cf6")
+//                .then()
+//                .statusCode(200)
+//                .body(notNullValue());
+//    }
+//    @Test
+//    public void testClientByIdNotFound(){
+//        when().get("b07e0b20-b7b4-11ec-aa42-bb7fafee3cf65")
+//                .then()
+//                .statusCode(400)
+//                .body(notNullValue());
+//    }
 
     @Test
     public void testCreateNewClient(){

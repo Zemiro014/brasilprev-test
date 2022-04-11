@@ -6,6 +6,7 @@ import jeronimo.teste.brasilprev.bean.to.responseTO.ClientResponseTO;
 import jeronimo.teste.brasilprev.exception.custom.ClientException;
 import jeronimo.teste.brasilprev.facade.api.ClientFacadeApi;
 import jeronimo.teste.brasilprev.service.api.ClientServiceApi;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,12 +29,12 @@ public class ClientFacadeImpl implements ClientFacadeApi {
     }
 
     @Override
-    public ClientResponseTO findClientById(String clientId) throws ClientException {
-        return clientService.findClientById(clientId);
+    public ClientResponseTO findClientById(String clientId, JsonWebToken jwt) throws ClientException {
+        return clientService.findClientById(clientId, jwt);
     }
 
     @Override
-    public void updateClient(String clientId, UpdateClientRequestTO to) throws ClientException {
-        clientService.updateClient(clientId, to);
+    public void updateClient(String clientId, UpdateClientRequestTO to, JsonWebToken jwt) throws ClientException {
+        clientService.updateClient(clientId, to, jwt);
     }
 }

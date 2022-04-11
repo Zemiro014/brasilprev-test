@@ -62,14 +62,16 @@ public class PostgresClientDaoImpl implements PostgresClientDaoApi {
         Map<String, Object> clientParams = new HashMap<>();
         clientParams.put("clientname", clientVO.getClientName());
         clientParams.put("cpf", clientVO.getCpf());
+        clientParams.put("email", clientVO.getEmail());
         clientParams.put("id", clientVO.getId());
-        Client.update("clientname = :clientname , cpf = :cpf where id = :id", clientParams);
+        Client.update("clientname = :clientname , cpf = :cpf, email = :email where id = :id", clientParams);
     }
 
     private ClientVO convertEntityToVo(Client entity){
         ClientVO clientVO = new ClientVO();
         clientVO.setClientName(entity.getClientName());
         clientVO.setCpf(entity.getCpf());
+        clientVO.setEmail(entity.getEmail());
         clientVO.setId(entity.getId());
 
         AddressVO addressVO = new AddressVO();
@@ -87,6 +89,7 @@ public class PostgresClientDaoImpl implements PostgresClientDaoApi {
         Client entity = new Client();
         entity.setClientName(clientVO.getClientName());
         entity.setCpf(clientVO.getCpf());
+        entity.setEmail(clientVO.getEmail());
         entity.setId(clientVO.getId());
 
         Address address = new Address();

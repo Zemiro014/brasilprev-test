@@ -6,6 +6,7 @@ public class ClientResponseTO implements Serializable {
     private String id;
     private String clientName;
     private String cpf;
+    private String email;
     private AddressResponseTO adress;
 
     public String getId() {
@@ -38,5 +39,13 @@ public class ClientResponseTO implements Serializable {
 
     public void setAdress(AddressResponseTO adress) {
         this.adress = adress;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -13,10 +13,14 @@ import jeronimo.teste.brasilprev.constants.ClientExceptionConstants;
 import jeronimo.teste.brasilprev.dao.api.postgres.PostgresClientDaoApi;
 import jeronimo.teste.brasilprev.exception.custom.ClientException;
 import jeronimo.teste.brasilprev.service.api.ClientServiceApi;
+import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -39,16 +43,32 @@ public class ClientServiceImpl implements ClientServiceApi {
     }
 
     @Override
-    public ClientResponseTO findClientById(String clientId) throws ClientException {
+    public ClientResponseTO findClientById(String clientId , JsonWebToken jwt) throws ClientException {
         ClientVO clientVO= clientDaoApi.findById(clientId);
+
+        String clientFullName = jwt.getClaim(Claims.full_name.name());
+        String clientEmail = jwt.getClaim("email");
+        Object[] roles = jwt.getGroups().toArray();
+        String role = Arrays.stream(roles).findFirst().get().toString();
+
         if(clientVO == null)
             throw new ClientException(ClientExceptionConstants.ERROR_CUSTOMER_NOT_FOUND, clientId);
+
+        if(role.equalsIgnoreCase("user"))
+            if(!clientVO.getEmail().equalsIgnoreCase(clientEmail) || !clientVO.getClientName().equalsIgnoreCase(clientFullName))
+                throw new ClientException(ClientExceptionConstants.ERROR_CUSTOMER_NOT_AUTHORIZED_TO_HANDLE_ACCOUNT, clientEmail);
         return convertVoToResponse(clientVO);
     }
 
     @Override
-    public void updateClient(String clientId, UpdateClientRequestTO to) throws ClientException {
+    public void updateClient(String clientId, UpdateClientRequestTO to, JsonWebToken jwt) throws ClientException {
        ClientVO clientVO = clientDaoApi.findById(clientId);
+
+        String clientFullName = jwt.getClaim(Claims.full_name.name());
+        String clientEmail = jwt.getClaim("email");
+        Object[] roles = jwt.getGroups().toArray();
+        String role = Arrays.stream(roles).findFirst().get().toString();
+
         if(clientVO == null)
             throw new ClientException(ClientExceptionConstants.ERROR_CUSTOMER_NOT_FOUND, clientId);
        clientDaoApi.update(updateClientInformation(clientVO, to));
@@ -58,7 +78,7 @@ public class ClientServiceImpl implements ClientServiceApi {
         UpdateClientTO updateClientTO = to.getNewBaseInformation();
         clientVO.setClientName(Strings.isNullOrEmpty(updateClientTO.getClientName()) ? clientVO.getClientName() : updateClientTO.getClientName());
         clientVO.setCpf(Strings.isNullOrEmpty(updateClientTO.getCpf()) ? clientVO.getCpf() : updateClientTO.getCpf());
-
+        clientVO.setEmail(Strings.isNullOrEmpty(updateClientTO.getEmail()) ? clientVO.getEmail() : updateClientTO.getEmail());
         UpdateAddressTO addressTO = to.getNewAddressesInformation();
         clientVO.getAdress().setCity(Strings.isNullOrEmpty(addressTO.getCity()) ? clientVO.getAdress().getCity() : addressTO.getCity());
         clientVO.getAdress().setCountry(Strings.isNullOrEmpty(addressTO.getCountry()) ? clientVO.getAdress().getCountry() : addressTO.getCountry());
@@ -74,7 +94,7 @@ public class ClientServiceImpl implements ClientServiceApi {
         clientResponseTO.setClientName(clientVO.getClientName());
         clientResponseTO.setCpf(clientVO.getCpf());
         clientResponseTO.setId(clientVO.getId());
-
+        clientResponseTO.setEmail(clientVO.getEmail());
         AddressResponseTO addressResponseTO = new AddressResponseTO();
         addressResponseTO.setId(clientVO.getAdress().getId());
         addressResponseTO.setCity(clientVO.getAdress().getCity());
@@ -92,6 +112,7 @@ public class ClientServiceImpl implements ClientServiceApi {
         ClientVO clientVO = new ClientVO();
         clientVO.setClientName(createClientRequestTO.getClientName());
         clientVO.setCpf(createClientRequestTO.getCpf());
+        clientVO.setEmail(createClientRequestTO.getEmail());
         AddressVO addressVO = new AddressVO();
         addressVO.setCity(createClientRequestTO.getAdress().getCity());
         addressVO.setCountry(createClientRequestTO.getAdress().getCountry());

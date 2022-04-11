@@ -3,6 +3,7 @@ package jeronimo.teste.brasilprev.entities;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 
 @Entity
 @Table(name = "client_tab")
@@ -12,6 +13,8 @@ public class Client extends PanacheEntityBase {
     private String id;
     private String clientName;
     private String cpf;
+    @Column(unique = true)
+    private String email;
 
     @OneToOne
     @JoinColumn(name = "adress_id")
@@ -46,6 +49,22 @@ public class Client extends PanacheEntityBase {
     }
 
     public void setAdress(Address address) {
+        this.address = address;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
         this.address = address;
     }
 }

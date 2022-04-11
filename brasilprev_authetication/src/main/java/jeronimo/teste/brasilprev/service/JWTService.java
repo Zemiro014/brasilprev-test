@@ -6,7 +6,6 @@ import jeronimo.teste.brasilprev.beans.responseTO.JwtResponseTO;
 import org.eclipse.microprofile.jwt.Claims;
 
 import javax.inject.Singleton;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +15,7 @@ public class JWTService {
 
     public JwtResponseTO generateJwt( String clientName, String clientEmail, RoleJwtRequestTO to){
         JwtResponseTO responseTO = new JwtResponseTO();
-        if(to.getRole() != "user" && to.getRole() != "admin" && to.getRole() != "dev"){
+        if(!to.getRole().equalsIgnoreCase("user")&& !to.getRole().equalsIgnoreCase("admin") && !to.getRole().equalsIgnoreCase("dev")){
             to.setRole("user");
         }
         Set<String> roles = new HashSet<>(

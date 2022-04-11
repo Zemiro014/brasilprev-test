@@ -6,6 +6,7 @@ public class ClientVO implements Serializable {
     private String id;
     private String clientName;
     private String cpf;
+    private String email;
 
     private AddressVO address;
 
@@ -39,5 +40,13 @@ public class ClientVO implements Serializable {
 
     public void setAdress(AddressVO address) {
         this.address = address;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

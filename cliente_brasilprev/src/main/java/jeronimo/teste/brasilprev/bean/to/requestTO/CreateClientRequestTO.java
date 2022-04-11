@@ -3,6 +3,7 @@ package jeronimo.teste.brasilprev.bean.to.requestTO;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.validator.constraints.br.CPF;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -14,6 +15,9 @@ public class CreateClientRequestTO implements Serializable
 
     @NotNull @NotEmpty @CPF
     private String cpf;
+
+    @NotNull @NotEmpty @Email
+    private String email;
 
     @NotNull @NotEmpty
     private CreateAddressRequestTO adress;
@@ -43,5 +47,13 @@ public class CreateClientRequestTO implements Serializable
 
     public void setAdress(CreateAddressRequestTO adress) {
         this.adress = adress;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
