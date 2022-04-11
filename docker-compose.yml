@@ -9,3 +9,27 @@ services:
       POSTGRES_PASSWORD: clientbrasilprev
     ports:
       - "5432:5432"
+  
+  # brasilprev-client:
+  #   container_name: brasilprev-client
+  #   image: brasilprevjeronimo/client:1.0.0-SNAPSHOT
+  #   ports:
+  #     - '8090:8090'
+  #   environment:
+  #     MP_JWT_VERIFY_PUBLICKEY_LOCATION: /jwt/publicKey.pem
+  #   volumes:
+  #     - type: bind
+  #       source: ./jwt
+  #       target: /jwt
+
+  # brasilprev_authentication:
+  #   container_name: brasilprev_authentication
+  #   image: brasilprevjeronimo/authentication:1.0.0-SNAPSHOT
+  #   ports:
+  #     - '8091:8091'
+  #   environment:
+  #     SMALLRYE_JWT_SIGN_KEY_LOCATION: /jwt/privateKey.pem
+  #   volumes:
+  #     - type: bind
+  #       source: ./jwt
+  #       target: /jwt
