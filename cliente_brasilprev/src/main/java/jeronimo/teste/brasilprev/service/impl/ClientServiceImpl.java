@@ -71,6 +71,10 @@ public class ClientServiceImpl implements ClientServiceApi {
 
         if(clientVO == null)
             throw new ClientException(ClientExceptionConstants.ERROR_CUSTOMER_NOT_FOUND, clientId);
+
+        if(role.equalsIgnoreCase("user"))
+            if(!clientVO.getEmail().equalsIgnoreCase(clientEmail) || !clientVO.getClientName().equalsIgnoreCase(clientFullName))
+                throw new ClientException(ClientExceptionConstants.ERROR_CUSTOMER_NOT_AUTHORIZED_TO_HANDLE_ACCOUNT, clientEmail);
        clientDaoApi.update(updateClientInformation(clientVO, to));
     }
 
