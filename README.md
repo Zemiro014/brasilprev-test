@@ -15,3 +15,9 @@
 
   ### The postgres database is configured in the docker-compose.yml file.
         Execute: docker-compose up
+
+
+## About Sagger documentation
+### You have the option to run the swaggers scripts in a swagger editor. Just open Swagger Editor in your browser and import the files below:
+    Script Swagger authentication
+    Script Swagger client

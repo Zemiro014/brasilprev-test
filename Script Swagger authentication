@@ -1,0 +1,52 @@
+---
+openapi: 3.0.3
+info:
+  title: brasilprev_authetication API
+  version: 1.0.0-SNAPSHOT
+tags:
+- name: brasilprev_authentication
+  description: It's the module that allows authentication
+paths:
+  /jwt/authentication:
+    post:
+      tags:
+      - brasilprev_authentication
+      summary: Authentication
+      description: Route that allows authentication
+      parameters:
+      - name: Client_Email
+        in: header
+        description: Must be a valid email of customer
+        required: true
+        schema:
+          type: string
+        example: joao@gmail.com
+      - name: Client_Name
+        in: header
+        description: Must be a customer full name
+        required: true
+        schema:
+          type: string
+        example: João Kleber
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleJwtRequestTO'
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    RoleJwtRequestTO:
+      required:
+      - role
+      type: object
+      properties:
+        role:
+          description: Represent the customer role
+          default: user | admin | dev
+          minLength: 3
+          type: string
+          example: user
+          nullable: false

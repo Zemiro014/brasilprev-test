@@ -1,0 +1,204 @@
+---
+openapi: 3.0.3
+info:
+  title: cliente_brasilprev API
+  version: 1.0.0-SNAPSHOT
+tags:
+- name: Customer
+  description: In this module there are EndPoints that managments customer
+paths:
+  /clients:
+    get:
+      tags:
+      - Customer
+      summary: All customer
+      description: Get all customer in system
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - admin
+        - dev
+    post:
+      tags:
+      - Customer
+      summary: New Customer
+      description: Allow creating new customer in system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClientRequestTO'
+      responses:
+        "200":
+          description: OK
+  /clients/{clientId}:
+    get:
+      tags:
+      - Customer
+      summary: Specific customer
+      description: 'Allow searching a specific customer in system informing a valid
+        id '
+      parameters:
+      - name: clientId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - admin
+        - user
+    put:
+      tags:
+      - Customer
+      summary: Update Customer
+      description: Allow updating customer information in system
+      parameters:
+      - name: clientId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClientRequestTO'
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - admin
+        - user
+components:
+  schemas:
+    CreateAddressRequestTO:
+      required:
+      - street
+      - number
+      - zipCode
+      - city
+      - state
+      - country
+      type: object
+      properties:
+        street:
+          description: Customer street
+          minLength: 1
+          type: string
+          example: Independência
+          nullable: false
+        number:
+          description: Customer residencial number
+          minLength: 1
+          type: string
+          example: "815"
+          nullable: false
+        zipCode:
+          description: Customer zipcode
+          minLength: 1
+          type: string
+          example: "1930001"
+          nullable: false
+        city:
+          description: Customer city
+          minLength: 1
+          type: string
+          example: São Leopoldo
+          nullable: false
+        state:
+          description: Customer state
+          minLength: 1
+          type: string
+          example: RS
+          nullable: false
+        country:
+          description: Customer country
+          minLength: 1
+          type: string
+          example: Brasil
+          nullable: false
+    CreateClientRequestTO:
+      required:
+      - clientName
+      - cpf
+      - email
+      - adress
+      type: object
+      properties:
+        clientName:
+          description: Customer full name
+          minLength: 1
+          type: string
+          example: Paulo dos Santos
+          nullable: false
+        cpf:
+          description: Customer cpf
+          minLength: 1
+          type: string
+          example: "62308576006"
+          nullable: false
+        email:
+          minLength: 1
+          type: string
+          nullable: false
+        adress:
+          allOf:
+          - $ref: '#/components/schemas/CreateAddressRequestTO'
+          - description: Customer address
+            nullable: false
+    UpdateAddressTO:
+      type: object
+      properties:
+        street:
+          type: string
+        number:
+          type: string
+        zipCode:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+    UpdateClientRequestTO:
+      type: object
+      properties:
+        newBaseInformation:
+          $ref: '#/components/schemas/UpdateClientTO'
+        newAddressesInformation:
+          $ref: '#/components/schemas/UpdateAddressTO'
+    UpdateClientTO:
+      type: object
+      properties:
+        clientName:
+          type: string
+        cpf:
+          type: string
+        email:
+          type: string
+  securitySchemes:
+    SecurityScheme:
+      type: http
+      description: Authentication
+      scheme: bearer
+      bearerFormat: JWT
